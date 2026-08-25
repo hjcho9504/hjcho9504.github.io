@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>조형준 · 자기소개</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F9FC;
+    --panel:#FFFFFF;
+    --ink:#16202B;
+    --ink-soft:#64707D;
+    --ink-faint:#9AA5B1;
+    --green:#1C7A4B;
+    --green-bright:#21A366;
+    --green-tint:#E7F5EC;
+    --yellow:#FFD23F;
+    --line:#DCE3EC;
+    --line-soft:#EBEFF4;
+    --radius:2px;
+  }
+ 
+  *{ margin:0; padding:0; box-sizing:border-box; }
+ 
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+ 
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+ 
+  .mono{ font-family:'JetBrains Mono', ui-monospace, monospace; }
+ 
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  :focus-visible{ outline:2px solid var(--green-bright); outline-offset:3px; }
+ 
+  /* ===== Top Excel-style bar ===== */
+  .topbar{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(247,249,252,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center;
+    height:52px;
+    padding:0 16px;
+    gap:12px;
+  }
+  .file-tab{
+    font-size:13px; font-weight:600; color:var(--ink-soft);
+    display:flex; align-items:center; gap:6px;
+    white-space:nowrap;
+  }
+  .file-tab .dot{ width:7px; height:7px; border-radius:50%; background:var(--green-bright); }
+  .name-box{
+    font-size:12px; font-weight:600; color:var(--green);
+    background:var(--panel); border:1px solid var(--line);
+    padding:6px 10px; min-width:46px; text-align:center;
+    flex-shrink:0;
+  }
+  .formula-bar{
+    flex:1; min-width:0;
+    font-size:12.5px; color:var(--ink-soft);
+    background:var(--panel); border:1px solid var(--line);
+    padding:6px 12px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    display:flex; align-items:center; gap:8px;
+  }
+  .formula-bar .fx{ color:var(--ink-faint); font-weight:600; }
+  .colnav{ display:flex; gap:2px; flex-shrink:0; }
+  .colnav button{
+    width:32px; height:32px;
+    font-size:12px; font-weight:700; color:var(--ink-soft);
+    border:1px solid var(--line);
+    background:var(--panel);
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .colnav button:hover, .colnav button.active{
+    background:var(--green); color:#fff; border-color:var(--green);
+  }
+ 
+  @media (max-width:640px){
+    .formula-bar{ display:none; }
+    .file-tab span.full{ display:none; }
+  }
+ 
+  /* ===== Layout shell ===== */
+  main{ padding-top:52px; }
+ 
+  .row{
+    position:relative;
+    max-width:960px;
+    margin:0 auto;
+    padding:96px 24px 24px;
+  }
+  .rownum{
+    position:absolute; left:-8px; top:96px;
+    transform:translateX(-100%);
+    font-size:11px; color:var(--ink-faint);
+    padding-right:14px;
+  }
+  @media (max-width:900px){ .rownum{ display:none; } }
+ 
+  .grid-frame{
+    border:1px solid var(--line);
+    background:var(--panel);
+  }
+ 
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:11px; font-weight:700; letter-spacing:.06em;
+    color:var(--green); text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:''; width:16px; height:1px; background:var(--green-bright);
+  }
+ 
+  mark{
+    background:linear-gradient(to top, var(--yellow) 42%, transparent 42%);
+    padding:0 2px;
+    color:var(--ink);
+  }
+ 
+  /* ===== Hero ===== */
+  .hero{ padding-top:120px; }
+  .hero-cell{
+    border:1px solid var(--line);
+    background:var(--panel);
+    padding:56px 40px;
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr 220px;
+    gap:40px;
+    align-items:start;
+  }
+  .hero-cell::before{
+    content:'';
+    position:absolute; inset:8px;
+    border:1px solid var(--green-bright);
+    opacity:0; transition:opacity .2s;
+    pointer-events:none;
+  }
+  .hero-cell:hover::before{ opacity:1; }
+  @media (max-width:720px){
+    .hero-cell{ grid-template-columns:1fr; }
+    .photo-frame{ order:-1; width:140px; height:140px; }
+  }
+ 
+  .photo-frame{
+    width:220px; height:220px;
+    border:1.5px solid var(--line);
+    background:var(--panel);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  .photo-frame img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .photo-frame .placeholder{
+    text-align:center; padding:16px;
+  }
+  .photo-frame .placeholder svg{ width:36px; height:36px; color:var(--ink-faint); margin-bottom:10px; }
+  .photo-frame .placeholder span{
+    font-size:11.5px; color:var(--ink-faint); font-weight:600; line-height:1.5; display:block;
+  }
+  .photo-frame .cellref-tag{
+    position:absolute; top:6px; left:6px;
+    font-size:10px; font-weight:700; color:var(--green);
+    background:var(--panel); border:1px solid var(--line);
+    padding:2px 6px;
+  }
+ 
+  .hero-formula{
+    font-size:12.5px; color:var(--ink-faint);
+    margin-bottom:22px;
+  }
+  h1.name{
+    font-size:clamp(40px, 8vw, 76px);
+    font-weight:800;
+    letter-spacing:-0.03em;
+    line-height:1.05;
+  }
+  .role-line{
+    margin-top:14px;
+    font-size:clamp(14px, 2vw, 17px);
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  .role-line .sep{ color:var(--ink-faint); margin:0 8px; }
+ 
+  .tagline{
+    margin-top:32px;
+    font-size:clamp(18px, 3vw, 25px);
+    font-weight:600;
+    line-height:1.5;
+  }
+ 
+  .hero-meta{
+    margin-top:36px;
+    display:flex; gap:24px; flex-wrap:wrap;
+  }
+  .hero-meta div{ font-size:12px; color:var(--ink-faint); }
+  .hero-meta strong{ display:block; font-size:13px; color:var(--ink-soft); font-weight:600; margin-bottom:2px; }
+ 
+  /* ===== Section heads ===== */
+  .section-head{
+    display:flex; align-items:baseline; gap:14px;
+    margin-bottom:28px;
+  }
+  .section-head .ref{
+    font-size:12px; font-weight:700; color:var(--green);
+    background:var(--green-tint); padding:3px 8px;
+  }
+  .section-head h2{
+    font-size:clamp(22px, 3vw, 30px);
+    font-weight:800; letter-spacing:-0.02em;
+  }
+ 
+  /* ===== About ===== */
+  .about-cell{
+    padding:32px 36px;
+    font-size:16px; line-height:1.85; color:var(--ink);
+  }
+  .about-cell p + p{ margin-top:14px; }
+  .about-cell strong{ font-weight:700; color:var(--green); }
+ 
+  .strength-tags{
+    display:flex; gap:8px; flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .strength-tag{
+    font-size:12px; font-weight:700; color:var(--green);
+    background:var(--green-tint); border:1px solid var(--green-bright);
+    padding:5px 10px;
+  }
+ 
+  /* ===== Skills ===== */
+  .skill-row{
+    display:grid;
+    grid-template-columns:100px 1fr auto;
+    gap:20px;
+    align-items:center;
+    padding:20px 24px;
+    border-top:1px solid var(--line-soft);
+    transition:background .15s;
+  }
+  .skill-row:first-child{ border-top:none; }
+  .skill-row:hover{ background:var(--green-tint); }
+  .skill-row .cellref{ font-size:11px; color:var(--ink-faint); }
+  .skill-name{ font-size:16px; font-weight:700; }
+  .skill-track{
+    display:flex; gap:5px;
+  }
+  .skill-blocks{ display:flex; gap:4px; }
+  .block{
+    width:22px; height:14px;
+    background:var(--line-soft);
+    border:1px solid var(--line);
+  }
+  .block.filled{ background:var(--green-bright); border-color:var(--green-bright); }
+  .skill-label{ font-size:12px; font-weight:700; color:var(--green); text-align:right; min-width:28px; }
+ 
+  /* ===== Certs ===== */
+  .cert-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:720px){ .cert-grid{ grid-template-columns:1fr; } }
+  .cert-cell{
+    background:var(--panel);
+    padding:28px 24px;
+    position:relative;
+    transition:background .15s;
+  }
+  .cert-cell:hover{ background:var(--green-tint); }
+  .cert-cell .cellref{ font-size:11px; color:var(--ink-faint); display:block; margin-bottom:14px; }
+  .cert-name{ font-size:20px; font-weight:800; letter-spacing:-.01em; }
+  .cert-desc{ margin-top:8px; font-size:13.5px; color:var(--ink-soft); line-height:1.6; }
+  .cert-badge{
+    display:inline-block; margin-top:16px;
+    font-size:10.5px; font-weight:700; color:var(--green);
+    background:var(--green-tint); padding:3px 8px;
+    border:1px solid var(--green-bright);
+  }
+ 
+  /* ===== Contact ===== */
+  .contact-grid{
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:1px; background:var(--line); border:1px solid var(--line);
+  }
+  @media (max-width:640px){ .contact-grid{ grid-template-columns:1fr; } }
+  .contact-cell{
+    background:var(--panel);
+    padding:30px 26px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .contact-cell .left{ min-width:0; }
+  .contact-cell .cellref{ font-size:11px; color:var(--ink-faint); display:block; margin-bottom:8px; }
+  .contact-value{ font-size:17px; font-weight:700; word-break:break-all; }
+  .contact-sub{ font-size:12px; color:var(--ink-faint); margin-top:2px; }
+  .copy-btn{
+    flex-shrink:0;
+    font-size:11px; font-weight:700; color:var(--ink-soft);
+    border:1px solid var(--line); padding:8px 12px;
+    transition:all .15s;
+    white-space:nowrap;
+  }
+  .copy-btn:hover{ border-color:var(--green-bright); color:var(--green); }
+  .copy-btn.copied{ background:var(--green); border-color:var(--green); color:#fff; }
+ 
+  /* ===== Footer ===== */
+  .footer-row{
+    max-width:960px; margin:0 auto;
+    padding:60px 24px 100px;
+    text-align:center;
+  }
+  .footer-row .big{
+    font-size:13px; color:var(--ink-faint);
+    font-weight:600;
+  }
+  .footer-row .small{
+    margin-top:6px; font-size:11.5px; color:var(--ink-faint);
+  }
+ 
+  .reveal{
+    opacity:0; transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+ 
+<div class="topbar">
+  <div class="file-tab"><span class="dot"></span><span class="full">조형준.xlsx</span></div>
+  <div class="name-box mono" id="nameBox">A1</div>
+  <div class="formula-bar mono" id="formulaBar"><span class="fx">fx</span><span id="formulaText">="경희대학교 산업경영공학과 22학번, 조형준"</span></div>
+  <div class="colnav">
+    <button data-target="hero" class="active" aria-label="A열, 홈으로 이동">A</button>
+    <button data-target="about" aria-label="B열, 소개로 이동">B</button>
+    <button data-target="certs" aria-label="C열, 자격증으로 이동">C</button>
+    <button data-target="contact" aria-label="D열, 연락처로 이동">D</button>
+  </div>
+</div>
+ 
+<main>
+ 
+  <!-- HERO / A1 -->
+  <section class="row hero" id="hero" data-cell="A1" data-formula="=조형준.소개()">
+    <div class="hero-cell">
+      <div class="hero-text">
+        <div class="hero-formula mono">// cell A1 · 산업경영공학과 22학번</div>
+        <h1 class="name">조형준</h1>
+        <p class="role-line">경희대학교 <span class="sep">·</span> 산업경영공학과 <span class="sep">·</span> 22학번</p>
+        <p class="tagline"><mark>평범하지만 특별하길 바라는</mark> 대학생입니다.</p>
+        <div class="hero-meta">
+          <div><strong>전공</strong>산업경영공학과</div>
+          <div><strong>학번</strong>22학번</div>
+          <div><strong>관심 분야</strong>생산·품질 최적화</div>
+        </div>
+      </div>
+      <div class="photo-frame">
+        <span class="cellref-tag mono">A1</span>
+        <img src="profile.png" alt="조형준 프로필 사진">
+      </div>
+    </div>
+  </section>
+ 
+  <!-- ABOUT / B1 -->
+  <section class="row" id="about" data-cell="B1" data-formula="=조형준.자기소개()">
+    <span class="rownum mono">02</span>
+    <div class="section-head">
+      <span class="ref mono">B1</span>
+      <h2>자기소개</h2>
+    </div>
+    <div class="grid-frame about-cell reveal">
+      <div class="strength-tags">
+        <span class="strength-tag">#도전 정신</span>
+        <span class="strength-tag">#효율적 문제 해결</span>
+      </div>
+      <p>저는 <strong>'새로운 분야에 대한 도전 정신'</strong>과 <strong>'효율적인 문제 해결 능력'</strong>을 강점으로 가지고 있습니다. 지루하고 단순 반복적인 작업보다는 항상 새로움을 주는 목표에 몰입하며, 먹는 즐거움과 운동으로 에너지를 얻는 편입니다.</p>
+      <p>어떤 과제가 주어졌을 때 시간과 노력을 가장 가성비 있게 배치해 최선의 성과를 내는 <strong>'효율성'</strong>을 핵심 가치로 둡니다.</p>
+      <p>대인관계에서는 초반에 약간의 낯가림이 있지만, 조직에 적응하고 나면 팀원들을 세심하게 챙기고 유쾌한 분위기를 만드는 든든한 조력자 역할을 합니다.</p>
+    </div>
+  </section>
+ 
+  <!-- INTERESTS / B2 -->
+  <section class="row" id="interests" data-cell="B2" data-formula="=조형준.관심분야()">
+    <span class="rownum mono">03</span>
+    <div class="section-head">
+      <span class="ref mono">B2</span>
+      <h2>관심 분야</h2>
+    </div>
+    <div class="grid-frame about-cell reveal">
+      <p>산업공학을 전공하며 생산 시스템과 품질 관리의 중요성을 배웠고, 특히 <strong>데이터와 시뮬레이션을 활용한 생산 최적화 및 품질 최적화</strong> 분야에 깊은 관심을 갖게 되었습니다.</p>
+      <p>연구실 소개의 <strong>'팹 물류 디지털 트윈'</strong>과 <strong>'지능형 제조 제어'</strong>처럼, 제조 현장에서 발생하는 복잡한 물류 병목과 공정 결함을 데이터 기반 알고리즘으로 해결하는 기술을 깊이 탐구하고 싶습니다.</p>
+      <p>다양한 프로젝트와 논문 연구로 더 성장하고 배우고 싶습니다.</p>
+    </div>
+  </section>
+ 
+  <!-- SKILLS / B3 -->
+  <section class="row" id="skills" data-cell="B3" data-formula="=조형준.보유스킬()">
+    <span class="rownum mono">04</span>
+    <div class="section-head">
+      <span class="ref mono">B3</span>
+      <h2>보유 스킬</h2>
+    </div>
+    <div class="grid-frame reveal">
+      <div class="skill-row">
+        <div class="skill-name">Excel</div>
+        <div class="skill-track">
+          <div class="skill-blocks">
+            <div class="block filled"></div><div class="block filled"></div><div class="block"></div>
+          </div>
+        </div>
+        <div class="skill-label mono">중</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Python</div>
+        <div class="skill-track">
+          <div class="skill-blocks">
+            <div class="block filled"></div><div class="block"></div><div class="block"></div>
+          </div>
+        </div>
+        <div class="skill-label mono">하</div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-name">Access</div>
+        <div class="skill-track">
+          <div class="skill-blocks">
+            <div class="block filled"></div><div class="block filled"></div><div class="block"></div>
+          </div>
+        </div>
+        <div class="skill-label mono">중</div>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CERTS / C -->
+  <section class="row" id="certs" data-cell="C1" data-formula="=조형준.자격증목록()">
+    <span class="rownum mono">05</span>
+    <div class="section-head">
+      <span class="ref mono">C1</span>
+      <h2>자격증</h2>
+    </div>
+    <div class="cert-grid reveal">
+      <div class="cert-cell">
+        <span class="cellref mono">C2</span>
+        <div class="cert-name">SQLD</div>
+        <div class="cert-desc">SQL 개발자 자격 — 데이터베이스 설계와 SQL 활용 능력을 인증합니다.</div>
+        <span class="cert-badge">DATA</span>
+      </div>
+      <div class="cert-cell">
+        <span class="cellref mono">C3</span>
+        <div class="cert-name">ADsP</div>
+        <div class="cert-desc">데이터분석 준전문가 — 데이터 이해와 분석 기초 역량을 인증합니다.</div>
+        <span class="cert-badge">DATA</span>
+      </div>
+      <div class="cert-cell">
+        <span class="cellref mono">C4</span>
+        <div class="cert-name">컴활 1급</div>
+        <div class="cert-desc">컴퓨터활용능력 1급 — 엑셀·엑세스 등 사무 자동화 실무 능력을 인증합니다.</div>
+        <span class="cert-badge">OFFICE</span>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- CONTACT / D -->
+  <section class="row" id="contact" data-cell="D1" data-formula="=조형준.연락처()">
+    <span class="rownum mono">06</span>
+    <div class="section-head">
+      <span class="ref mono">D1</span>
+      <h2>연락처</h2>
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-cell">
+        <div class="left">
+          <span class="cellref mono">D2</span>
+          <div class="contact-value">010-7737-9504</div>
+          <div class="contact-sub">전화</div>
+        </div>
+        <button class="copy-btn" data-copy="01077379504">복사</button>
+      </div>
+      <div class="contact-cell">
+        <div class="left">
+          <span class="cellref mono">D3</span>
+          <div class="contact-value">hjcho0311@khu.ac.kr</div>
+          <div class="contact-sub">이메일</div>
+        </div>
+        <button class="copy-btn" data-copy="hjcho0311@khu.ac.kr">복사</button>
+      </div>
+    </div>
+  </section>
+ 
+  <div class="footer-row">
+    <div class="big mono">ROW 99 · END OF SHEET</div>
+    <div class="small">© 2026 조형준. 평범하지만, 특별하게.</div>
+  </div>
+ 
+</main>
+ 
+<script>
+  // Active cell / formula bar sync
+  const nameBox = document.getElementById('nameBox');
+  const formulaText = document.getElementById('formulaText');
+  const sections = document.querySelectorAll('main section[data-cell]');
+  const navBtns = document.querySelectorAll('.colnav button');
+ 
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const cell = entry.target.dataset.cell;
+        const formula = entry.target.dataset.formula;
+        nameBox.textContent = cell;
+        formulaText.textContent = formula;
+ 
+        const colLetter = cell[0];
+        navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === entry.target.id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+ 
+  sections.forEach(s => io.observe(s));
+ 
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById(btn.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+ 
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealIO = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealIO.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => revealIO.observe(el));
+ 
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      const original = btn.textContent;
+      btn.textContent = '복사됨';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500);
+    });
+  });
+</script>
+ 
+</body>
+</html>
+ 
