@@ -96,6 +96,9 @@
  
   /* ===== Layout shell ===== */
   main{ padding-top:52px; }
+
+  /* 상단 네비게이션 바 높이 고려 스크롤 여백 보정 */
+  main section{ scroll-margin-top:52px; }
  
   .row{
     position:relative;
@@ -168,6 +171,7 @@
   }
   .photo-frame img{
     width:100%; height:100%; object-fit:cover; display:block;
+    background-color:var(--line-soft);
   }
   .photo-frame .placeholder{
     text-align:center; padding:16px;
@@ -180,7 +184,7 @@
     position:absolute; top:6px; left:6px;
     font-size:10px; font-weight:700; color:var(--green);
     background:var(--panel); border:1px solid var(--line);
-    padding:2px 6px;
+    padding:2px 6px; z-index:2;
   }
  
   .hero-formula{
@@ -583,4 +587,3 @@
  
 </body>
 </html>
- 
