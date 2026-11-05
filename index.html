@@ -9,423 +9,162 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F7F9FC;
-    --panel:#FFFFFF;
-    --ink:#16202B;
-    --ink-soft:#64707D;
-    --ink-faint:#9AA5B1;
-    --green:#1C7A4B;
-    --green-bright:#21A366;
-    --green-tint:#E7F5EC;
-    --yellow:#FFD23F;
-    --line:#DCE3EC;
-    --line-soft:#EBEFF4;
-    --radius:2px;
+    --bg:#F7F9FC; --panel:#FFFFFF; --ink:#16202B; --ink-soft:#64707D; --ink-faint:#8995A1;
+    --green:#1C7A4B; --green-bright:#21A366; --green-tint:#E7F5EC; --yellow:#FFD23F;
+    --line:#DCE3EC; --line-soft:#EBEFF4;
   }
- 
   *{ margin:0; padding:0; box-sizing:border-box; }
- 
   html{ scroll-behavior:smooth; }
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; }
     *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
   }
- 
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-  }
- 
-  .mono{ font-family:'JetBrains Mono', ui-monospace, monospace; }
- 
+  body{ background:var(--bg); color:var(--ink); font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  body.modal-open{ overflow:hidden; }
+  .mono{ font-family:'JetBrains Mono',ui-monospace,monospace; }
   a{ color:inherit; text-decoration:none; }
   button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
   :focus-visible{ outline:2px solid var(--green-bright); outline-offset:3px; }
- 
-  /* ===== Top Excel-style bar ===== */
-  .topbar{
-    position:fixed; top:0; left:0; right:0; z-index:100;
-    background:rgba(247,249,252,0.92);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
-    display:flex; align-items:center;
-    height:52px;
-    padding:0 16px;
-    gap:12px;
-  }
-  .file-tab{
-    font-size:13px; font-weight:600; color:var(--ink-soft);
-    display:flex; align-items:center; gap:6px;
-    white-space:nowrap;
-  }
+
+  /* Top bar */
+  .topbar{ position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(247,249,252,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); display:flex; align-items:center; height:52px; padding:0 16px; gap:12px; }
+  .file-tab{ font-size:13px; font-weight:600; color:var(--ink-soft); display:flex; align-items:center; gap:6px; white-space:nowrap; }
   .file-tab .dot{ width:7px; height:7px; border-radius:50%; background:var(--green-bright); }
-  .name-box{
-    font-size:12px; font-weight:600; color:var(--green);
-    background:var(--panel); border:1px solid var(--line);
-    padding:6px 10px; min-width:46px; text-align:center;
-    flex-shrink:0;
-  }
-  .formula-bar{
-    flex:1; min-width:0;
-    font-size:12.5px; color:var(--ink-soft);
-    background:var(--panel); border:1px solid var(--line);
-    padding:6px 12px;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    display:flex; align-items:center; gap:8px;
-  }
+  .name-box{ font-size:12px; font-weight:600; color:var(--green); background:var(--panel); border:1px solid var(--line); padding:6px 10px; min-width:46px; text-align:center; flex-shrink:0; }
+  .formula-bar{ flex:1; min-width:0; font-size:12.5px; color:var(--ink-soft); background:var(--panel); border:1px solid var(--line); padding:6px 12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:8px; }
   .formula-bar .fx{ color:var(--ink-faint); font-weight:600; }
   .colnav{ display:flex; gap:2px; flex-shrink:0; }
-  .colnav button{
-    width:32px; height:32px;
-    font-size:12px; font-weight:700; color:var(--ink-soft);
-    border:1px solid var(--line);
-    background:var(--panel);
-    transition:background .15s, color .15s, border-color .15s;
-  }
-  .colnav button:hover, .colnav button.active{
-    background:var(--green); color:#fff; border-color:var(--green);
-  }
- 
-  @media (max-width:640px){
-    .formula-bar{ display:none; }
-    .file-tab span.full{ display:none; }
-  }
- 
-  /* ===== Layout shell ===== */
+  .colnav button{ width:32px; height:32px; font-size:12px; font-weight:700; color:var(--ink-soft); border:1px solid var(--line); background:var(--panel); transition:background .15s,color .15s,border-color .15s; }
+  .colnav button:hover,.colnav button.active{ background:var(--green); color:#fff; border-color:var(--green); }
+  @media (max-width:640px){ .formula-bar{ display:none; } .file-tab span.full{ display:none; } }
+
+  /* Layout */
   main{ padding-top:52px; }
   main section{ scroll-margin-top:52px; }
- 
-  .row{
-    position:relative;
-    max-width:960px;
-    margin:0 auto;
-    padding:96px 24px 24px;
-  }
-  .rownum{
-    position:absolute; left:-8px; top:96px;
-    transform:translateX(-100%);
-    font-size:11px; color:var(--ink-faint);
-    padding-right:14px;
-  }
+  .row{ position:relative; max-width:960px; margin:0 auto; padding:96px 24px 24px; }
+  .rownum{ position:absolute; left:-8px; top:96px; transform:translateX(-100%); font-size:11px; color:var(--ink-faint); padding-right:14px; }
   @media (max-width:900px){ .rownum{ display:none; } }
- 
-  .grid-frame{
-    border:1px solid var(--line);
-    background:var(--panel);
-  }
- 
-  mark{
-    background:linear-gradient(to top, var(--yellow) 42%, transparent 42%);
-    padding:0 2px;
-    color:var(--ink);
-  }
- 
-  /* ===== Hero ===== */
+  .grid-frame{ border:1px solid var(--line); background:var(--panel); }
+  mark{ background:linear-gradient(to top,var(--yellow) 42%,transparent 42%); padding:0 2px; color:var(--ink); }
+
+  /* Hero */
   .hero{ padding-top:120px; }
-  .hero-cell{
-    border:1px solid var(--line);
-    background:var(--panel);
-    padding:56px 40px;
-    position:relative;
-    display:grid;
-    grid-template-columns:1fr 220px;
-    gap:40px;
-    align-items:start;
-  }
-  .hero-cell::before{
-    content:'';
-    position:absolute; inset:8px;
-    border:1px solid var(--green-bright);
-    opacity:0; transition:opacity .2s;
-    pointer-events:none;
-  }
+  .hero-cell{ border:1px solid var(--line); background:var(--panel); padding:56px 40px; position:relative; display:grid; grid-template-columns:1fr 220px; gap:40px; align-items:start; }
+  .hero-cell::before{ content:''; position:absolute; inset:8px; border:1px solid var(--green-bright); opacity:0; transition:opacity .2s; pointer-events:none; }
   .hero-cell:hover::before{ opacity:1; }
-  @media (max-width:720px){
-    .hero-cell{ grid-template-columns:1fr; }
-    .photo-frame{ order:-1; width:140px; height:140px; }
-  }
- 
-  .photo-frame{
-    width:220px; height:220px;
-    border:1.5px solid var(--line);
-    background:var(--panel);
-    display:flex; align-items:center; justify-content:center;
-    position:relative;
-    overflow:hidden;
-    flex-shrink:0;
-  }
-  .photo-frame img{
-    width:100%; height:100%; object-fit:cover; display:block;
-    background-color:var(--line-soft);
-  }
-  .photo-frame .cellref-tag{
-    position:absolute; top:6px; left:6px;
-    font-size:10px; font-weight:700; color:var(--green);
-    background:var(--panel); border:1px solid var(--line);
-    padding:2px 6px; z-index:2;
-  }
- 
-  h1.name{
-    font-size:clamp(40px, 8vw, 76px);
-    font-weight:800;
-    letter-spacing:-0.03em;
-    line-height:1.05;
-  }
-  .role-line{
-    margin-top:14px;
-    font-size:clamp(14px, 2vw, 17px);
-    color:var(--ink-soft);
-    font-weight:500;
-  }
+  @media (max-width:720px){ .hero-cell{ grid-template-columns:1fr; padding:40px 24px; } .photo-frame{ order:-1; width:140px; height:140px; } }
+  .photo-frame{ width:220px; height:220px; border:1.5px solid var(--line); background:var(--panel); position:relative; overflow:hidden; flex-shrink:0; }
+  .photo-frame img{ width:100%; height:100%; object-fit:cover; display:block; background-color:var(--line-soft); }
+  .photo-frame .cellref-tag{ position:absolute; top:6px; left:6px; font-size:10px; font-weight:700; color:var(--green); background:var(--panel); border:1px solid var(--line); padding:2px 6px; z-index:2; }
+  h1.name{ font-size:clamp(40px,8vw,76px); font-weight:800; letter-spacing:-.03em; line-height:1.05; }
+  .role-line{ margin-top:14px; font-size:clamp(14px,2vw,17px); color:var(--ink-soft); font-weight:500; }
   .role-line .sep{ color:var(--ink-faint); margin:0 8px; }
- 
-  .tagline{
-    margin-top:32px;
-    font-size:clamp(18px, 3vw, 25px);
-    font-weight:600;
-    line-height:1.5;
-  }
- 
-  .hero-meta{
-    margin-top:36px;
-    display:flex; gap:24px; flex-wrap:wrap;
-  }
+  .tagline{ margin-top:32px; font-size:clamp(18px,3vw,25px); font-weight:600; line-height:1.5; }
+  .hero-meta{ margin-top:36px; display:flex; gap:24px; flex-wrap:wrap; }
   .hero-meta div{ font-size:12px; color:var(--ink-faint); }
   .hero-meta strong{ display:block; font-size:13px; color:var(--ink-soft); font-weight:600; margin-bottom:2px; }
- 
-  /* ===== Section heads ===== */
-  .section-head{
-    display:flex; align-items:baseline; gap:14px;
-    margin-bottom:28px;
-  }
-  .section-head .ref{
-    font-size:12px; font-weight:700; color:var(--green);
-    background:var(--green-tint); padding:3px 8px;
-  }
-  .section-head h2{
-    font-size:clamp(22px, 3vw, 30px);
-    font-weight:800; letter-spacing:-0.02em;
-  }
- 
-  /* ===== About & Shared Cells ===== */
-  .about-cell{
-    padding:32px 36px;
-    font-size:16px; line-height:1.85; color:var(--ink);
-  }
+
+  /* Section heads / text cells */
+  .section-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:28px; }
+  .section-head .ref{ font-size:12px; font-weight:700; color:var(--green); background:var(--green-tint); padding:3px 8px; }
+  .section-head h2{ font-size:clamp(22px,3vw,30px); font-weight:800; letter-spacing:-.02em; }
+  .about-cell{ padding:32px 36px; font-size:16px; line-height:1.85; }
+  @media (max-width:640px){ .about-cell{ padding:24px 20px; } }
   .about-cell p + p{ margin-top:14px; }
   .about-cell strong{ font-weight:700; color:var(--green); }
- 
-  .strength-tags{
-    display:flex; gap:8px; flex-wrap:wrap;
-    margin-bottom:20px;
-  }
-  .strength-tag{
-    font-size:12px; font-weight:700; color:var(--green);
-    background:var(--green-tint); border:1px solid var(--green-bright);
-    padding:5px 10px;
-  }
+  .strength-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .strength-tag{ font-size:12px; font-weight:700; color:var(--green); background:var(--green-tint); border:1px solid var(--green-bright); padding:5px 10px; }
 
-  /* ===== Study Cards (Interactive) ===== */
-  .study-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 16px;
-    margin-top: 20px;
-  }
-  .study-card {
-    border: 1px solid var(--line);
-    background: var(--bg);
-    padding: 20px;
-    cursor: pointer;
-    transition: all .2s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-  }
-  .study-card:hover {
-    border-color: var(--green-bright);
-    background: var(--panel);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
-  }
-  .study-card .cellref {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--ink-faint);
-    margin-bottom: 8px;
-  }
-  .study-title {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 8px;
-  }
-  .study-desc {
-    font-size: 13.5px;
-    color: var(--ink-soft);
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-  .study-action {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--green);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+  /* Cards (Study + Projects) */
+  .study-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin-top:20px; }
+  .study-card{ border:1px solid var(--line); background:var(--bg); cursor:pointer; text-align:left; font-size:inherit; transition:border-color .2s,background .2s,transform .2s,box-shadow .2s; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden; }
+  .study-card:hover{ border-color:var(--green-bright); background:var(--panel); transform:translateY(-3px); box-shadow:0 6px 16px rgba(0,0,0,.04); }
+  .card-thumb{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:var(--line-soft); border-bottom:1px solid var(--line); }
+  .card-body{ padding:20px; }
+  .study-card .cellref{ font-size:11px; font-weight:700; color:var(--ink-faint); margin-bottom:8px; }
+  .study-title{ font-size:18px; font-weight:800; margin-bottom:8px; line-height:1.4; }
+  .meta-line{ font-size:12.5px; color:var(--ink-faint); margin-bottom:8px; }
+  .study-desc{ font-size:13.5px; color:var(--ink-soft); line-height:1.6; margin-bottom:16px; }
+  .study-action{ font-size:12px; font-weight:700; color:var(--green); padding:0 20px 20px; }
+  .study-action::after{ content:' →'; }
+  .tag-row{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px; }
+  .tag{ font-size:11px; font-weight:700; color:var(--green); background:var(--green-tint); padding:2px 8px; }
+  .empty-note{ font-size:14px; color:var(--ink-faint); margin-top:16px; }
 
-  /* Modal Style */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(22, 32, 43, 0.45);
-    backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 200; opacity: 0; pointer-events: none;
-    transition: opacity .2s ease;
-    padding: 20px;
-  }
-  .modal-overlay.active {
-    opacity: 1; pointer-events: auto;
-  }
-  .modal-content {
-    background: var(--panel);
-    width: 100%; max-width: 640px;
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: 32px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-  }
-  .modal-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 16px;
-  }
-  .modal-close {
-    font-size: 28px; font-weight: 700; color: var(--ink-soft);
-    line-height: 1; cursor: pointer;
-  }
-  .modal-close:hover { color: var(--ink); }
-  
-  .detail-box {
-    background: var(--bg);
-    border: 1px solid var(--line);
-    padding: 16px;
-    margin-top: 14px;
-    border-left: 3px solid var(--green-bright);
-  }
-  .detail-box-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 6px;
-  }
- 
-  /* ===== Skills ===== */
-  .skill-row{
-    display:grid;
-    grid-template-columns:100px 1fr auto;
-    gap:20px;
-    align-items:center;
-    padding:20px 24px;
-    border-top:1px solid var(--line-soft);
-    transition:background .15s;
-  }
+  /* Modal */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(22,32,43,.45); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:200; opacity:0; visibility:hidden; transition:opacity .2s,visibility .2s; padding:20px; }
+  .modal-overlay.active{ opacity:1; visibility:visible; }
+  .modal-content{ width:100%; max-width:720px; max-height:88vh; overflow-y:auto; padding:32px; box-shadow:0 12px 32px rgba(0,0,0,.12); transform:translateY(10px); transition:transform .2s; }
+  .modal-overlay.active .modal-content{ transform:none; }
+  @media (max-width:640px){ .modal-content{ padding:22px 18px; } }
+  .modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .modal-header .ref{ font-size:12px; font-weight:700; color:var(--green); background:var(--green-tint); padding:3px 8px; }
+  .modal-close{ font-size:28px; font-weight:700; color:var(--ink-soft); line-height:1; width:36px; height:36px; }
+  .modal-close:hover{ color:var(--ink); }
+  #modalTitle{ font-size:24px; font-weight:800; margin-bottom:6px; line-height:1.35; }
+  #modalSub{ font-size:12px; color:var(--green); font-weight:700; margin-bottom:20px; }
+  #modalBody{ font-size:14.5px; line-height:1.7; }
+  #modalBody .tag-row{ margin-top:14px; }
+  .detail-box{ background:var(--bg); border:1px solid var(--line); border-left:3px solid var(--green-bright); padding:16px; margin-top:14px; }
+  .detail-box-title{ font-size:14px; font-weight:700; color:var(--green); margin-bottom:6px; }
+  .detail-box p{ font-size:13.5px; white-space:pre-line; }
+  .plain-list{ padding-left:18px; margin-top:14px; }
+  .plain-list li + li{ margin-top:6px; }
+  .plain-list.small{ padding-left:16px; margin-top:6px; font-size:13px; color:var(--ink-soft); }
+  .gallery{ display:grid; gap:14px; margin-top:18px; }
+  .gallery figure{ border:1px solid var(--line); background:var(--bg); }
+  .gallery img{ width:100%; display:block; }
+  .gallery figcaption{ font-size:12px; color:var(--ink-soft); padding:8px 12px; border-top:1px solid var(--line); }
+  .link-row{ margin-top:18px; display:flex; gap:8px; flex-wrap:wrap; }
+  .link-row a{ font-size:12px; font-weight:700; border:1px solid var(--line); padding:8px 12px; }
+  .link-row a:hover{ border-color:var(--green-bright); color:var(--green); }
+
+  /* Skills */
+  .skill-row{ display:grid; grid-template-columns:100px 1fr auto; gap:20px; align-items:center; padding:20px 24px; border-top:1px solid var(--line-soft); transition:background .15s; }
   .skill-row:first-child{ border-top:none; }
   .skill-row:hover{ background:var(--green-tint); }
-  .skill-row .cellref{ font-size:11px; color:var(--ink-faint); }
   .skill-name{ font-size:16px; font-weight:700; }
-  .skill-track{ display:flex; gap:5px; }
   .skill-blocks{ display:flex; gap:4px; }
-  .block{
-    width:22px; height:14px;
-    background:var(--line-soft);
-    border:1px solid var(--line);
-  }
+  .block{ width:22px; height:14px; background:var(--line-soft); border:1px solid var(--line); }
   .block.filled{ background:var(--green-bright); border-color:var(--green-bright); }
   .skill-label{ font-size:12px; font-weight:700; color:var(--green); text-align:right; min-width:28px; }
- 
-  /* ===== Certs ===== */
-  .cert-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:1px;
-    background:var(--line);
-    border:1px solid var(--line);
-  }
+
+  /* Certs */
+  .cert-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
   @media (max-width:720px){ .cert-grid{ grid-template-columns:1fr; } }
-  .cert-cell{
-    background:var(--panel);
-    padding:28px 24px;
-    position:relative;
-    transition:background .15s;
-  }
+  .cert-cell{ background:var(--panel); padding:28px 24px; transition:background .15s; }
   .cert-cell:hover{ background:var(--green-tint); }
   .cert-cell .cellref{ font-size:11px; color:var(--ink-faint); display:block; margin-bottom:14px; }
   .cert-name{ font-size:20px; font-weight:800; letter-spacing:-.01em; }
   .cert-desc{ margin-top:8px; font-size:13.5px; color:var(--ink-soft); line-height:1.6; }
-  .cert-badge{
-    display:inline-block; margin-top:16px;
-    font-size:10.5px; font-weight:700; color:var(--green);
-    background:var(--green-tint); padding:3px 8px;
-    border:1px solid var(--green-bright);
-  }
- 
-  /* ===== Contact ===== */
-  .contact-grid{
-    display:grid; grid-template-columns:1fr 1fr;
-    gap:1px; background:var(--line); border:1px solid var(--line);
-  }
+  .cert-badge{ display:inline-block; margin-top:16px; font-size:10.5px; font-weight:700; color:var(--green); background:var(--green-tint); padding:3px 8px; border:1px solid var(--green-bright); }
+
+  /* Contact */
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); }
   @media (max-width:640px){ .contact-grid{ grid-template-columns:1fr; } }
-  .contact-cell{
-    background:var(--panel);
-    padding:30px 26px;
-    display:flex; align-items:center; justify-content:space-between; gap:16px;
-  }
+  .contact-cell{ background:var(--panel); padding:30px 26px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .contact-cell .left{ min-width:0; }
   .contact-cell .cellref{ font-size:11px; color:var(--ink-faint); display:block; margin-bottom:8px; }
   .contact-value{ font-size:17px; font-weight:700; word-break:break-all; }
   .contact-sub{ font-size:12px; color:var(--ink-faint); margin-top:2px; }
-  .copy-btn{
-    flex-shrink:0;
-    font-size:11px; font-weight:700; color:var(--ink-soft);
-    border:1px solid var(--line); padding:8px 12px;
-    transition:all .15s;
-    white-space:nowrap;
-  }
+  .copy-btn{ flex-shrink:0; font-size:11px; font-weight:700; color:var(--ink-soft); border:1px solid var(--line); padding:8px 12px; transition:all .15s; white-space:nowrap; }
   .copy-btn:hover{ border-color:var(--green-bright); color:var(--green); }
   .copy-btn.copied{ background:var(--green); border-color:var(--green); color:#fff; }
- 
-  /* ===== Footer ===== */
-  .footer-row{
-    max-width:960px; margin:0 auto;
-    padding:60px 24px 100px;
-    text-align:center;
-  }
-  .footer-row .big{
-    font-size:13px; color:var(--ink-faint);
-    font-weight:600;
-  }
-  .footer-row .small{
-    margin-top:6px; font-size:11.5px; color:var(--ink-faint);
-  }
- 
-  .reveal{
-    opacity:0; transform:translateY(14px);
-    transition:opacity .5s ease, transform .5s ease;
-  }
-  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* Footer / reveal */
+  .footer-row{ max-width:960px; margin:0 auto; padding:60px 24px 100px; text-align:center; }
+  .footer-row .big{ font-size:13px; color:var(--ink-faint); font-weight:600; }
+  .footer-row .small{ margin-top:6px; font-size:11.5px; color:var(--ink-faint); }
+  .reveal{ opacity:0; transform:translateY(14px); transition:opacity .5s ease,transform .5s ease; }
+  .reveal.in{ opacity:1; transform:none; }
 </style>
 </head>
 <body>
- 
+
 <div class="topbar">
   <div class="file-tab"><span class="dot"></span><span class="full">조형준.xlsx</span></div>
   <div class="name-box mono" id="nameBox">A1</div>
-  <div class="formula-bar mono" id="formulaBar"><span class="fx">fx</span><span id="formulaText">="경희대학교 산업경영공학과 22학번, 조형준"</span></div>
+  <div class="formula-bar mono"><span class="fx">fx</span><span id="formulaText">="경희대학교 산업경영공학과 22학번, 조형준"</span></div>
   <div class="colnav">
     <button data-target="hero" class="active" aria-label="A열, 홈으로 이동">A</button>
     <button data-target="about" aria-label="B열, 소개로 이동">B</button>
@@ -433,16 +172,13 @@
     <button data-target="contact" aria-label="D열, 연락처로 이동">D</button>
   </div>
 </div>
- 
+
 <main>
- 
-  <!-- HERO / A1 -->
+
   <section class="row hero" id="hero" data-cell="A1" data-formula="=조형준.소개()">
     <div class="hero-cell">
       <div class="hero-text">
-        <div class="section-head" style="margin-bottom: 12px;">
-          <span class="ref mono">A1</span>
-        </div>
+        <div class="section-head" style="margin-bottom:12px;"><span class="ref mono">A1</span></div>
         <h1 class="name">조형준</h1>
         <p class="role-line">경희대학교 <span class="sep">·</span> 산업경영공학과 <span class="sep">·</span> 22학번</p>
         <p class="tagline"><mark>평범하지만 특별하길 바라는</mark> 대학생입니다.</p>
@@ -458,14 +194,10 @@
       </div>
     </div>
   </section>
- 
-  <!-- ABOUT / B1 -->
+
   <section class="row" id="about" data-cell="B1" data-formula="=조형준.자기소개()">
     <span class="rownum mono">02</span>
-    <div class="section-head">
-      <span class="ref mono">B1</span>
-      <h2>자기소개</h2>
-    </div>
+    <div class="section-head"><span class="ref mono">B1</span><h2>자기소개</h2></div>
     <div class="grid-frame about-cell reveal">
       <div class="strength-tags">
         <span class="strength-tag">#도전 정신</span>
@@ -476,14 +208,10 @@
       <p>대인관계에서는 초반에 약간의 낯가림이 있지만, 조직에 적응하고 나면 팀원들을 세심하게 챙기고 유쾌한 분위기를 만드는 든든한 조력자 역할을 합니다.</p>
     </div>
   </section>
- 
-  <!-- INTERESTS / B2 -->
+
   <section class="row" id="interests" data-cell="B2" data-formula="=조형준.관심분야()">
     <span class="rownum mono">03</span>
-    <div class="section-head">
-      <span class="ref mono">B2</span>
-      <h2>관심 분야</h2>
-    </div>
+    <div class="section-head"><span class="ref mono">B2</span><h2>관심 분야</h2></div>
     <div class="grid-frame about-cell reveal">
       <p>산업공학을 전공하며 생산 시스템과 품질 관리의 중요성을 배웠고, 특히 <strong>데이터와 시뮬레이션을 활용한 생산 최적화 및 품질 최적화</strong> 분야에 깊은 관심을 갖게 되었습니다.</p>
       <p>연구실 소개의 <strong>'팹 물류 디지털 트윈'</strong>과 <strong>'지능형 제조 제어'</strong>처럼, 제조 현장에서 발생하는 복잡한 물류 병목과 공정 결함을 데이터 기반 알고리즘으로 해결하는 기술을 깊이 탐구하고 싶습니다.</p>
@@ -491,95 +219,51 @@
     </div>
   </section>
 
-  <!-- STUDY / B3 -->
+  <!-- STUDY: 내용은 data/study.js -->
   <section class="row" id="study" data-cell="B3" data-formula="=조형준.학습영역()">
     <span class="rownum mono">04</span>
-    <div class="section-head">
-      <span class="ref mono">B3</span>
-      <h2>Study</h2>
-    </div>
+    <div class="section-head"><span class="ref mono">B3</span><h2>Study</h2></div>
     <div class="grid-frame about-cell reveal">
-      <p>전공 역량을 높이기 위해 **최적화론, 공급망 관리(SCM), 품질 관리**를 중점적으로 탐구하였습니다. 카드를 클릭하면 상세 학습 내용 및 세부 알고리즘 연구 내용을 확인하실 수 있습니다.</p>
-      
-      <div class="study-grid">
-        <!-- 최적화론 카드 -->
-        <div class="study-card" onclick="openStudyModal('opt')">
-          <div>
-            <div class="cellref mono">B3:OPT</div>
-            <div class="study-title">최적화론</div>
-            <div class="study-desc">수리적 모델링과 메타휴리스틱 알고리즘을 활용한 의사결정 및 자원 배분 최적화.</div>
-          </div>
-          <div class="study-action">세부 알고리즘 보기 (심플렉스, SA, GA 등) &rarr;</div>
-        </div>
-
-        <!-- SCM 카드 -->
-        <div class="study-card" onclick="openStudyModal('scm')">
-          <div>
-            <div class="cellref mono">B3:SCM</div>
-            <div class="study-title">공급망 관리 (SCM)</div>
-            <div class="study-desc">자원 조달, 생산, 물류 유통 네트워크 전체의 효율성 극대화 및 채찍효과 방지.</div>
-          </div>
-          <div class="study-action">세부 학습 내용 보기 &rarr;</div>
-        </div>
-
-        <!-- 품질관리 카드 -->
-        <div class="study-card" onclick="openStudyModal('qc')">
-          <div>
-            <div class="cellref mono">B3:QC</div>
-            <div class="study-title">품질 관리</div>
-            <div class="study-desc">통계적 공정 관리(SPC) 및 데이터 기반 이상치 탐지를 통한 공정 안정화.</div>
-          </div>
-          <div class="study-action">이상치 탐지 기법 세부 내용 보기 &rarr;</div>
-        </div>
-      </div>
+      <p>전공 역량을 높이기 위해 <strong>최적화론, 공급망 관리(SCM), 품질 관리</strong>를 중점적으로 탐구하였습니다. 카드를 클릭하면 상세 학습 내용을 확인하실 수 있습니다.</p>
+      <div class="study-grid" id="studyGrid"></div>
     </div>
   </section>
- 
-  <!-- SKILLS / B4 -->
-  <section class="row" id="skills" data-cell="B4" data-formula="=조형준.보유스킬()">
+
+  <!-- PROJECTS: 내용은 data/projects.js -->
+  <section class="row" id="projects" data-cell="B4" data-formula="=조형준.프로젝트()">
     <span class="rownum mono">05</span>
-    <div class="section-head">
-      <span class="ref mono">B4</span>
-      <h2>보유 스킬</h2>
+    <div class="section-head"><span class="ref mono">B4</span><h2>프로젝트</h2></div>
+    <div class="grid-frame about-cell reveal">
+      <p>학부 과정에서 수행한 프로젝트입니다. 카드를 클릭하면 진행 내용과 결과를 확인하실 수 있습니다.</p>
+      <div class="study-grid" id="projectGrid"></div>
     </div>
+  </section>
+
+  <section class="row" id="skills" data-cell="B5" data-formula="=조형준.보유스킬()">
+    <span class="rownum mono">06</span>
+    <div class="section-head"><span class="ref mono">B5</span><h2>보유 스킬</h2></div>
     <div class="grid-frame reveal">
       <div class="skill-row">
         <div class="skill-name">Excel</div>
-        <div class="skill-track">
-          <div class="skill-blocks">
-            <div class="block filled"></div><div class="block filled"></div><div class="block"></div>
-          </div>
-        </div>
+        <div class="skill-blocks"><div class="block filled"></div><div class="block filled"></div><div class="block"></div></div>
         <div class="skill-label mono">중</div>
       </div>
       <div class="skill-row">
         <div class="skill-name">Python</div>
-        <div class="skill-track">
-          <div class="skill-blocks">
-            <div class="block filled"></div><div class="block"></div><div class="block"></div>
-          </div>
-        </div>
+        <div class="skill-blocks"><div class="block filled"></div><div class="block"></div><div class="block"></div></div>
         <div class="skill-label mono">하</div>
       </div>
       <div class="skill-row">
         <div class="skill-name">Access</div>
-        <div class="skill-track">
-          <div class="skill-blocks">
-            <div class="block filled"></div><div class="block filled"></div><div class="block"></div>
-          </div>
-        </div>
+        <div class="skill-blocks"><div class="block filled"></div><div class="block filled"></div><div class="block"></div></div>
         <div class="skill-label mono">중</div>
       </div>
     </div>
   </section>
- 
-  <!-- CERTS / C -->
+
   <section class="row" id="certs" data-cell="C1" data-formula="=조형준.자격증목록()">
-    <span class="rownum mono">06</span>
-    <div class="section-head">
-      <span class="ref mono">C1</span>
-      <h2>자격증</h2>
-    </div>
+    <span class="rownum mono">07</span>
+    <div class="section-head"><span class="ref mono">C1</span><h2>자격증</h2></div>
     <div class="cert-grid reveal">
       <div class="cert-cell">
         <span class="cellref mono">C2</span>
@@ -601,14 +285,10 @@
       </div>
     </div>
   </section>
- 
-  <!-- CONTACT / D -->
+
   <section class="row" id="contact" data-cell="D1" data-formula="=조형준.연락처()">
-    <span class="rownum mono">07</span>
-    <div class="section-head">
-      <span class="ref mono">D1</span>
-      <h2>연락처</h2>
-    </div>
+    <span class="rownum mono">08</span>
+    <div class="section-head"><span class="ref mono">D1</span><h2>연락처</h2></div>
     <div class="contact-grid reveal">
       <div class="contact-cell">
         <div class="left">
@@ -628,180 +308,164 @@
       </div>
     </div>
   </section>
- 
+
   <div class="footer-row">
     <div class="big mono">ROW 99 · END OF SHEET</div>
     <div class="small">© 2026 조형준. 평범하지만, 특별하게.</div>
   </div>
- 
+
 </main>
 
-<!-- Study 모달 (팝업) -->
-<div class="modal-overlay" id="studyModal" onclick="closeStudyModal(event)">
-  <div class="modal-content grid-frame" onclick="event.stopPropagation()">
+<!-- 공용 모달 (Study / 프로젝트) -->
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-content grid-frame">
     <div class="modal-header">
-      <span class="ref mono" id="modalRef">B3:STUDY</span>
-      <button class="modal-close" onclick="closeStudyModal()">&times;</button>
+      <span class="ref mono" id="modalRef"></span>
+      <button class="modal-close" id="modalClose" aria-label="닫기">&times;</button>
     </div>
-    <h3 id="modalTitle" style="font-size: 24px; font-weight: 800; margin-bottom: 6px;">개념명</h3>
-    <div id="modalSub" class="mono" style="font-size: 12px; color: var(--green); font-weight: 700; margin-bottom: 20px;">분류</div>
-    <div id="modalBody" style="font-size: 14.5px; line-height: 1.7; color: var(--ink);">
-      <!-- JavaScript로 내용이 동적 삽입됩니다 -->
-    </div>
-    <div style="margin-top: 28px; text-align: right;">
-      <button class="copy-btn" onclick="closeStudyModal()">닫기</button>
+    <h3 id="modalTitle"></h3>
+    <div id="modalSub" class="mono"></div>
+    <div id="modalBody"></div>
+    <div style="margin-top:28px; text-align:right;">
+      <button class="copy-btn" id="modalClose2">닫기</button>
     </div>
   </div>
 </div>
- 
+
+<!-- 데이터 파일: 내용을 바꾸려면 이 두 파일만 수정하세요 -->
+<script src="data/study.js"></script>
+<script src="data/projects.js"></script>
 <script>
-  // Active cell / formula bar sync
+  /* ===== 상단바: 활성 셀 / 수식 표시 ===== */
   const nameBox = document.getElementById('nameBox');
   const formulaText = document.getElementById('formulaText');
-  const sections = document.querySelectorAll('main section[data-cell]');
   const navBtns = document.querySelectorAll('.colnav button');
- 
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const cell = entry.target.dataset.cell;
-        const formula = entry.target.dataset.formula;
-        nameBox.textContent = cell;
-        formulaText.textContent = formula;
- 
-        navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === entry.target.id));
-      }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      nameBox.textContent = e.target.dataset.cell;
+      formulaText.textContent = e.target.dataset.formula;
+      navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === e.target.id));
     });
   }, { rootMargin: '-45% 0px -45% 0px' });
- 
-  sections.forEach(s => io.observe(s));
- 
-  navBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.getElementById(btn.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+  document.querySelectorAll('main section[data-cell]').forEach(s => io.observe(s));
+  navBtns.forEach(btn => btn.addEventListener('click', () =>
+    document.getElementById(btn.dataset.target).scrollIntoView({ behavior: 'smooth', block: 'start' })));
+
+  /* ===== 공용 모달 ===== */
+  const modal = document.getElementById('modal');
+  let lastFocus = null;
+  function openModal({ ref, title, sub, body }) {
+    lastFocus = document.activeElement;
+    document.getElementById('modalRef').textContent = ref;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalSub').textContent = sub;
+    document.getElementById('modalBody').innerHTML = body;
+    modal.querySelector('.modal-content').scrollTop = 0;
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+    document.getElementById('modalClose').focus();
+  }
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    if (lastFocus) lastFocus.focus();
+  }
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalClose2').addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+
+  /* ===== 카드 렌더링 ===== */
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const safeUrl = u => /^(https?:|mailto:|\.{0,2}\/|[\w-]+\/)/i.test(u) ? u : '#';
+
+  // Study
+  const studyGrid = document.getElementById('studyGrid');
+  studyGrid.innerHTML = STUDY.map(s => `
+    <button type="button" class="study-card" data-study="${esc(s.id)}">
+      <div class="card-body">
+        <div class="cellref mono">${esc(s.ref)}</div>
+        <div class="study-title">${esc(s.title)}</div>
+        <div class="study-desc">${esc(s.desc)}</div>
+      </div>
+      <div class="study-action">${esc(s.action)}</div>
+    </button>`).join('');
+  studyGrid.addEventListener('click', e => {
+    const card = e.target.closest('[data-study]');
+    if (!card) return;
+    const s = STUDY.find(x => x.id === card.dataset.study);
+    openModal({ ref: s.ref, title: s.modalTitle, sub: s.category, body: s.body });
   });
- 
-  // Reveal on scroll
-  const revealEls = document.querySelectorAll('.reveal');
-  const revealIO = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        revealIO.unobserve(entry.target);
-      }
+
+  // Projects
+  const projectGrid = document.getElementById('projectGrid');
+  const tagsHtml = tags => (tags && tags.length)
+    ? `<div class="tag-row">${tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
+
+  if (!PROJECTS.length) {
+    projectGrid.outerHTML = '<p class="empty-note">프로젝트를 준비 중입니다.</p>';
+  } else {
+    projectGrid.innerHTML = PROJECTS.map((p, i) => `
+      <button type="button" class="study-card" data-project="${esc(p.id)}">
+        <div>
+          ${p.thumbnail ? `<img class="card-thumb" src="${esc(p.thumbnail)}" alt="" loading="lazy">` : ''}
+          <div class="card-body">
+            <div class="cellref mono">B4:P${String(i + 1).padStart(2, '0')}</div>
+            <div class="study-title">${esc(p.title)}</div>
+            <div class="meta-line">${esc(p.period)} · ${esc(p.role)}</div>
+            <div class="study-desc">${esc(p.summary)}</div>
+            ${tagsHtml(p.tags)}
+          </div>
+        </div>
+        <div class="study-action">프로젝트 자세히 보기</div>
+      </button>`).join('');
+
+    projectGrid.addEventListener('click', e => {
+      const card = e.target.closest('[data-project]');
+      if (!card) return;
+      const i = PROJECTS.findIndex(x => x.id === card.dataset.project);
+      const p = PROJECTS[i];
+      const body = `
+        <p>${esc(p.summary)}</p>
+        ${tagsHtml(p.tags)}
+        ${(p.details || []).map(d => `
+          <div class="detail-box">
+            <div class="detail-box-title">${esc(d.title)}</div>
+            <p>${esc(d.text)}</p>
+          </div>`).join('')}
+        ${(p.images && p.images.length) ? `<div class="gallery">${p.images.map(im => `
+          <figure><img src="${esc(im.src)}" alt="${esc(im.caption || p.title)}" loading="lazy">
+          ${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}
+        ${(p.links && p.links.length) ? `<div class="link-row">${p.links.map(l =>
+          `<a href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>` : ''}`;
+      openModal({ ref: `B4:P${String(i + 1).padStart(2, '0')}`, title: p.title, sub: `${p.period} · ${p.role}`, body });
     });
-  }, { threshold: 0.15 });
-  revealEls.forEach(el => revealIO.observe(el));
- 
-  // Copy buttons
-  document.querySelectorAll('.copy-btn').forEach(btn => {
+  }
+
+  /* ===== 스크롤 등장 ===== */
+  const revealIO = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+  /* ===== 복사 버튼 ===== */
+  document.querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const text = btn.dataset.copy;
-      if(!text) return;
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch (e) {
+      try { await navigator.clipboard.writeText(text); }
+      catch (err) {
         const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
       }
       const original = btn.textContent;
       btn.textContent = '복사됨';
       btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.classList.remove('copied');
-      }, 1500);
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
     });
   });
-
-  // Study Modal Data
-  const studyData = {
-    opt: {
-      title: "최적화론 (Optimization Theory)",
-      category: "OPERATIONS RESEARCH & MATHEMATICAL MODELING",
-      ref: "B3:OPT",
-      body: `
-        <p>제한된 자원 조건 속에서 목표(이익 극대화, 비용 최소화)를 수리적으로 달성하기 위한 의사결정 이론 및 알고리즘을 학습했습니다.</p>
-        
-        <div class="detail-box">
-          <div class="detail-box-title">1. Simplex Algorithm (심플렉스 알고리즘)</div>
-          <p style="font-size:13.5px;">선형계획법(LP)에서 제약조건 다면체의 꼭짓점을 순차적으로 탐색하여 최적해를 구하는 기본적이고 결정론적인 알고리즘입니다.</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-box-title">2. Simulated Annealing (SA / 담금질 기법)</div>
-          <p style="font-size:13.5px;">금속의 냉각 과정을 모방한 확률적 메타휴리스틱 기법입니다. 확률적으로 열등한 해를 허용하여 국소 최적해(Local Optima) 탈출을 가능하게 합니다.</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-box-title">3. Genetic Algorithm (GA / 유전자 알고리즘)</div>
-          <p style="font-size:13.5px;">생물 진화론의 선택, 교차, 변이 연산을 활용하는 탐색 기법입니다. 복잡한 조합 최적화 문제(예: 설비 배치, 공정 순서 수립)에서 광범위한 해공간을 효과적으로 탐색합니다.</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-box-title">4. Bootstrap (부트스트랩) & 통계적 최적화</div>
-          <p style="font-size:13.5px;">모집단의 분포 형태를 모를 때 재표본추출(Resampling)을 통해 최적화 알고리즘 해의 신뢰구간 및 불확실성(Uncertainty)을 검증하고 안정성을 높입니다.</p>
-        </div>
-      `
-    },
-    scm: {
-      title: "공급망 관리 (Supply Chain Management)",
-      category: "LOGISTICS & PRODUCTION NETWORK",
-      ref: "B3:SCM",
-      body: `
-        <p>원자재 구매부터 최종 소비자에 이르기까지 전체 공급망 상의 제품, 정보, 자금 흐름을 최적화하는 전략과 정량적 모델을 학습했습니다.</p>
-        <br>
-        <ul style="padding-left:18px;">
-          <li><strong>채찍효과(Bullwhip Effect) 분석:</strong> 공급망 하류의 미세한 수요 변화가 상류로 갈수록 왜곡 증폭되는 현상 방지 전략 연구.</li>
-          <li><strong>재고 최적화 (EOQ / Safety Stock):</strong> 보관 비용과 주문 비용 간의 Trade-off를 고려한 적정 안전재고 산정.</li>
-          <li><strong>디지털 트윈 및 물류 모의실험:</strong> 팹(Fab) 내 AGV/OHT 이동 병목 현상 완화 및 배차 스케줄링 학습.</li>
-        </ul>
-      `
-    },
-    qc: {
-      title: "품질 관리 & 이상치 탐지 (Quality Control)",
-      category: "STATISTICAL PROCESS CONTROL & DATA ANALYTICS",
-      ref: "B3:QC",
-      body: `
-        <p>공정 데이터의 변동성을 파악하여 품질 불량을 사전에 예방하고 통계적으로 관리하는 방법론을 체득했습니다.</p>
-
-        <div class="detail-box">
-          <div class="detail-box-title">1. 통계적 공정 관리 (SPC & 관리도)</div>
-          <p style="font-size:13.5px;">$\bar{X}-R$ 관리도 등을 이용하여 공정 신호의 우연원인과 이상원인을 구분하고 공정능력지수($C_p, C_{pk}$)를 평가합니다.</p>
-        </div>
-
-        <div class="detail-box">
-          <div class="detail-box-title">2. 데이터 기반 이상치 탐지 (Anomaly Detection)</div>
-          <p style="font-size:13.5px;">제조 센서 데이터 등 다변량 공정 데이터에서 정상 패턴을 벗어나는 불량 징후를 사전에 포착합니다.</p>
-          <ul style="padding-left:16px; margin-top:6px; font-size:13px; color:var(--ink-soft);">
-            <li><strong>Z-Score & IQR:</strong> 단변량 데이터에서 급격한 센서 변동 및 이상값 제거.</li>
-            <li><strong>Isolation Forest / LOF:</strong> 공정 데이터 간의 밀도 및 구조적 거리를 분석하여 다변량 고차원 이상치 탐지.</li>
-            <li><strong>Autoencoder 기반 탐지:</strong> 정상 데이터를 재구성(Reconstruction Error)하는 딥러닝 기법으로 미세 불량 검출.</li>
-          </ul>
-        </div>
-      `
-    }
-  };
-
-  function openStudyModal(key) {
-    const data = studyData[key];
-    if (!data) return;
-    document.getElementById('modalRef').textContent = data.ref;
-    document.getElementById('modalTitle').textContent = data.title;
-    document.getElementById('modalSub').textContent = data.category;
-    document.getElementById('modalBody').innerHTML = data.body;
-    document.getElementById('studyModal').classList.add('active');
-  }
-
-  function closeStudyModal(event) {
-    document.getElementById('studyModal').classList.remove('active');
-  }
 </script>
- 
+
 </body>
 </html>
