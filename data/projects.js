@@ -51,8 +51,8 @@ const PROJECTS = [
       }
     ],
     images: [
-      // { src: "img/heatwave-solar-1.png", caption: "연도별 발전량 vs 등가발전시간 추이" },
-      // { src: "img/heatwave-solar-2.png", caption: "33℃ 이상 일수와 등가발전시간의 관계" }
+       { src: "data/발전량vs등가시간.png", caption: "연도별 발전량 vs 등가발전시간 추이" },
+       { src: "data/폭염일수vs등가발전시간.png", caption: "33℃ 이상 일수와 등가발전시간의 관계" }
     ],
     links: [
       // { label: "GitHub", url: "https://github.com/..." }
