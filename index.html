@@ -229,7 +229,7 @@
     </div>
   </section>
 
-  <!-- PROJECTS: 내용은 data/projects.js -->
+  <!-- PROJECTS: 목록은 data/projects/list.js, 각 프로젝트는 data/projects/폴더/project.js -->
   <section class="row" id="projects" data-cell="B4" data-formula="=조형준.프로젝트()">
     <span class="rownum mono">05</span>
     <div class="section-head"><span class="ref mono">B4</span><h2>프로젝트</h2></div>
@@ -334,7 +334,12 @@
 
 <!-- 데이터 파일: 내용을 바꾸려면 이 두 파일만 수정하세요 -->
 <script src="data/study.js"></script>
-<script src="data/projects.js"></script>
+<script>
+  // 프로젝트 등록 함수: projects/<폴더>/project.js 안에서 호출됩니다.
+  window.PROJECTS = [];
+  window.registerProject = p => { p._base = document.currentScript ? document.currentScript.src.replace(/[^/]*$/, '') : ''; PROJECTS.push(p); };
+</script>
+<script src="data/projects/list.js"></script>
 <script>
   /* ===== 상단바: 활성 셀 / 수식 표시 ===== */
   const nameBox = document.getElementById('nameBox');
@@ -398,18 +403,30 @@
     openModal({ ref: s.ref, title: s.modalTitle, sub: s.category, body: s.body });
   });
 
-  // Projects
+  // Projects: data/projects/list.js 의 폴더명을 순서대로 불러온 뒤 카드 렌더링
   const projectGrid = document.getElementById('projectGrid');
   const tagsHtml = tags => (tags && tags.length)
     ? `<div class="tag-row">${tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
+  const asset = (p, src) => /^(https?:|data:|\/)/i.test(src) ? src : p._base + src;
 
-  if (!PROJECTS.length) {
-    projectGrid.outerHTML = '<p class="empty-note">프로젝트를 준비 중입니다.</p>';
-  } else {
-    projectGrid.innerHTML = PROJECTS.map((p, i) => `
-      <button type="button" class="study-card" data-project="${esc(p.id)}">
+  function loadProject(id) {
+    return new Promise(resolve => {
+      const s = document.createElement('script');
+      s.src = `data/projects/${encodeURIComponent(id)}/project.js`;
+      s.onload = s.onerror = () => resolve();
+      document.body.appendChild(s);
+    });
+  }
+
+  function renderProjects(list) {
+    if (!list.length) {
+      projectGrid.outerHTML = '<p class="empty-note">프로젝트를 준비 중입니다.</p>';
+      return;
+    }
+    projectGrid.innerHTML = list.map((p, i) => `
+      <button type="button" class="study-card" data-project="${i}">
         <div>
-          ${p.thumbnail ? `<img class="card-thumb" src="${esc(p.thumbnail)}" alt="" loading="lazy">` : ''}
+          ${p.thumbnail ? `<img class="card-thumb" src="${esc(asset(p, p.thumbnail))}" alt="" loading="lazy">` : ''}
           <div class="card-body">
             <div class="cellref mono">B4:P${String(i + 1).padStart(2, '0')}</div>
             <div class="study-title">${esc(p.title)}</div>
@@ -424,8 +441,7 @@
     projectGrid.addEventListener('click', e => {
       const card = e.target.closest('[data-project]');
       if (!card) return;
-      const i = PROJECTS.findIndex(x => x.id === card.dataset.project);
-      const p = PROJECTS[i];
+      const i = +card.dataset.project, p = list[i];
       const body = `
         <p>${esc(p.summary)}</p>
         ${tagsHtml(p.tags)}
@@ -435,13 +451,25 @@
             <p>${esc(d.text)}</p>
           </div>`).join('')}
         ${(p.images && p.images.length) ? `<div class="gallery">${p.images.map(im => `
-          <figure><img src="${esc(im.src)}" alt="${esc(im.caption || p.title)}" loading="lazy">
+          <figure><img src="${esc(asset(p, im.src))}" alt="${esc(im.caption || p.title)}" loading="lazy">
           ${im.caption ? `<figcaption>${esc(im.caption)}</figcaption>` : ''}</figure>`).join('')}</div>` : ''}
         ${(p.links && p.links.length) ? `<div class="link-row">${p.links.map(l =>
           `<a href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>` : ''}`;
       openModal({ ref: `B4:P${String(i + 1).padStart(2, '0')}`, title: p.title, sub: `${p.period} · ${p.role}`, body });
     });
   }
+
+  (async () => {
+    const ids = (typeof PROJECT_IDS !== 'undefined') ? PROJECT_IDS : [];
+    const byId = {};
+    // 순서를 보장하기 위해 하나씩 로드하고, 등록된 항목에 폴더명을 기록
+    for (const id of ids) {
+      const before = PROJECTS.length;
+      await loadProject(id);
+      if (PROJECTS.length > before) byId[id] = PROJECTS[PROJECTS.length - 1];
+    }
+    renderProjects(ids.map(id => byId[id]).filter(Boolean));
+  })();
 
   /* ===== 스크롤 등장 ===== */
   const revealIO = new IntersectionObserver(entries => {
