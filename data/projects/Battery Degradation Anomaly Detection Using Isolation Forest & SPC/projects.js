@@ -1,5 +1,5 @@
-
-{
+// 이미지 경로는 "이 폴더 기준" 파일명만 적습니다. (data/... 경로를 앞에 붙이지 마세요)
+registerProject({
   id: "battery-anomaly",
   title: "머신러닝 기반 배터리 열화 이상 탐지 시스템",
   period: "2026.11",
@@ -16,7 +16,7 @@
     "Anomaly Detection",
     "품질공학"
   ],
-  thumbnail: "data/battery-anomaly-control-chart.png",
+  thumbnail: "battery-anomaly-control-chart.png",
   details: [
     {
       title: "문제 정의",
@@ -49,15 +49,15 @@
   ],
   images: [
     {
-      src: "data/battery-anomaly-control-chart.png",
+      src: "battery-anomaly-control-chart.png",
       caption: "Isolation Forest 이상 점수 및 3-Sigma 통계적 관리도"
     },
     {
-      src: "data/battery-hyperparameter-tuning.png",
+      src: "battery-hyperparameter-tuning.png",
       caption: "Contamination 변화에 따른 Validation Accuracy 비교"
     },
     {
-      src: "data/battery-cycle-trends.png",
+      src: "battery-cycle-trends.png",
       caption: "배터리 충·방전 사이클별 전압·전류·온도 변화"
     }
   ],
@@ -65,5 +65,4 @@
     // { label: "GitHub", url: "https://github.com/..." },
     // { label: "분석 보고서", url: "..." }
   ]
-},
-
+});
