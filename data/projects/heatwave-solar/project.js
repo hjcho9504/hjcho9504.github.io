@@ -1,25 +1,13 @@
-// 프로젝트 데이터. 새 프로젝트는 배열 "맨 위"에 { ... }, 를 복사해 붙여넣으면 됩니다.
-//
-// 필드 설명
-//  id        : 영문/숫자 고유값 (중복 금지)
-//  title     : 프로젝트 이름
-//  period    : 진행 기간
-//  role      : 역할/인원
-//  summary   : 카드와 모달 상단에 보이는 한두 줄 요약
-//  tags      : 기술/키워드 태그
-//  thumbnail : (선택) 카드 상단 이미지 경로. 예: "img/heatwave-solar.png"
-//  details   : 모달에 나오는 소제목 + 설명 목록 (여러 줄은 "\n"으로 줄바꿈)
-//  images    : (선택) 모달에 보여줄 이미지 목록 [{ src, caption }]
-//  links     : (선택) GitHub, 보고서 등 외부 링크
-const PROJECTS = [
-  {
+// 프로젝트 1개 = 폴더 1개. 이 파일의 이미지 경로는 "이 폴더 기준"으로 적습니다. (예: src: "chart1.png")
+// 필드: id, title, period, role, summary, tags, thumbnail(선택), details[{title,text}], images[{src,caption}](선택), links[{label,url}](선택)
+registerProject({
     id: "heatwave-solar",
     title: "폭염이 태양광 발전에 미치는 영향 분석",
     period: "2026.11",
     role: "개인 프로젝트 · 데이터분석과 정보시각화",
     summary: "설비 증가 효과를 걷어낸 ‘등가발전시간’으로 2016~2024년 폭염·기온·일사량과 태양광 발전 성과의 관계를 탐색했습니다.",
     tags: ["Python", "pandas", "Matplotlib", "SciPy", "statsmodels", "공공데이터"],
-    thumbnail: "",
+    thumbnail: "발전량vs등가시간.png", // 이 폴더 안의 파일명
     details: [
       {
         title: "문제 정의",
@@ -51,11 +39,10 @@ const PROJECTS = [
       }
     ],
     images: [
-       { src: "data/projects/heatwave-solor/발전량vs등가시간.png", caption: "연도별 발전량 vs 등가발전시간 추이" },
-       { src: "data/projects/heatwave-solor/폭염일수vs등가발전시간.png", caption: "33℃ 이상 일수와 등가발전시간의 관계" }
+      { src: "발전량vs등가시간.png", caption: "연도별 발전량 vs 등가발전시간 추이" },
+      { src: "폭염일수vs등가발전시간.png", caption: "33℃ 이상 일수와 등가발전시간의 관계" }
     ],
     links: [
       // { label: "GitHub", url: "https://github.com/..." }
     ]
-  }
-];
+  });
